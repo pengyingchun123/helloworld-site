@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello World | pengyingchun</title>
+    <!--
+      单文件整合版：把原 Node.js 项目的 index.html + style.css + script.js 合并为一个 HTML。
+      无需服务器、无需依赖，直接用浏览器打开即可。
+    -->
+    <style>
+      :root {
+        --bg-start: #eef2ff;
+        --bg-end: #f8fafc;
+        --card-bg: #ffffff;
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --text: #1f2937;
+        --text-soft: #6b7280;
+        --border: #e5e7eb;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        min-height: 100vh;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 560px;
+        background: var(--card-bg);
+        border-radius: 18px;
+        padding: 48px 40px;
+        text-align: center;
+        box-shadow: 0 18px 48px rgba(37, 99, 235, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        animation: rise 0.5s ease-out;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .title {
+        font-size: 2.75rem;
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        background: linear-gradient(120deg, var(--primary), #7c3aed);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 16px;
+      }
+
+      .subtitle {
+        font-size: 1.125rem;
+        line-height: 1.7;
+        color: var(--text-soft);
+      }
+
+      .name {
+        color: var(--primary-dark);
+        font-weight: 700;
+      }
+
+      .clock {
+        margin-top: 32px;
+        padding: 20px 16px;
+        border-radius: 14px;
+        background: #f8fafc;
+        border: 1px dashed var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .clock-label {
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      .clock-value {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-dark);
+        font-variant-numeric: tabular-nums;
+      }
+
+      @media (max-width: 480px) {
+        .card {
+          padding: 36px 24px;
+        }
+
+        .title {
+          font-size: 2rem;
+        }
+
+        .clock-value {
+          font-size: 1.15rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1 class="title">Hello World！</h1>
+      <p class="subtitle">我是【<span class="name">pengyingchun</span>】，我的第一个AI开发的网站</p>
+
+      <section class="clock" aria-live="polite">
+        <span class="clock-label">当前服务器时间</span>
+        <time id="server-time" class="clock-value">--</time>
+      </section>
+    </main>
+
+    <script>
+      // 单文件版没有 Node 服务器，这里读取访问者设备（浏览器）的本地时间，
+      // 并每秒刷新，效果与原项目 /api/time 接口返回的格式一致。
+      (function () {
+        "use strict";
+
+        var WEEKDAYS = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
+        function pad2(value) {
+          return String(value).padStart(2, "0");
+        }
+
+        function formatTime(date) {
+          var datePart = [
+            date.getFullYear(),
+            pad2(date.getMonth() + 1),
+            pad2(date.getDate()),
+          ].join("-");
+          var timePart = [
+            pad2(date.getHours()),
+            pad2(date.getMinutes()),
+            pad2(date.getSeconds()),
+          ].join(":");
+          return datePart + " " + timePart + " " + WEEKDAYS[date.getDay()];
+        }
+
+        var el = document.getElementById("server-time");
+        if (!el) {
+          return;
+        }
+
+        function tick() {
+          var now = new Date();
+          el.textContent = formatTime(now);
+          el.setAttribute("datetime", now.toISOString());
+        }
+
+        tick();
+        setInterval(tick, 1000);
+      })();
+    </script>
+  </body>
+</html>
